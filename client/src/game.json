@@ -11,7 +11,9 @@
     "actions": {
       "gehe nach Süden": "start",
       "gehe nach Osten": "cave_entrance"
-    }
+    },
+    "trap": true,
+    "trapDescription": "Eine versteckte Falle schnappt zu und verletzt dich. Du verlierst 5 Lebenspunkte."
   },
   "forest_south": {
     "description": "Du bist auf einer sonnigen Lichtung. Es gibt ein Haus im Westen.",
@@ -32,7 +34,9 @@
     "actions": {
       "gehe nach Osten": "forest_south",
       "betrete das Haus": "inside_house"
-    }
+    },
+    "heal": true,
+    "healDescription": "Du findest einen Heiltrank und trinkst ihn. Deine Lebenspunkte sind wieder voll aufgefüllt."
   },
   "cave": {
     "description": "Du bist in einer dunklen Höhle. In der Ferne siehst du etwas Licht.",
@@ -53,7 +57,9 @@
     "actions": {
       "gehe zurück": "cave",
       "öffne die Truhe": "treasure"
-    }
+    },
+    "trap": true,
+    "trapDescription": "Als du die Truhe öffnest, löst du eine Falle aus und verlierst 5 Lebenspunkte."
   },
   "house_explore": {
     "description": "Du findest eine alte Karte im Haus.",
