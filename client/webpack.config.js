@@ -29,6 +29,11 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html'
         }),
+        new CopyPlugin({
+            patterns: [
+                {from: "src/style.css", to: "style.css"},
+            ],
+        }),
     ],
     devServer: {
         static: {
