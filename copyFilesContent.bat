@@ -21,7 +21,7 @@ if exist "%tempOutputFile%" del "%tempOutputFile%"
 REM Function to process files
 :processFiles
 REM Process files in the current directory
-for %%f in ("%~1\*.html" "%~1\*.ts" "%~1\*.css" "%~1\*.java") do (
+for %%f in ("%~1\*.html" "%~1\*.ts" "%~1\*.css" "%~1\*.json" "%~1\*.js" "%~1\*.java") do (
     if exist "%%~f" (
         echo ####################################################### >> "%tempOutputFile%"
         echo Datei: %%~f >> "%tempOutputFile%"

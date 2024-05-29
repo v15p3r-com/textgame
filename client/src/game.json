@@ -1,70 +1,70 @@
 {
   "start": {
-    "description": "You are standing in a forest. Paths lead north and south.",
+    "description": "Du stehst in einem Wald. Wege führen nach Norden und Süden.",
     "actions": {
-      "go north": "forest_north",
-      "go south": "forest_south"
+      "gehe nach Norden": "forest_north",
+      "gehe nach Süden": "forest_south"
     }
   },
   "forest_north": {
-    "description": "You are at the edge of a dark forest. There is a cave to the east.",
+    "description": "Du bist am Rand eines dunklen Waldes. Es gibt eine Höhle im Osten.",
     "actions": {
-      "go south": "start",
-      "go east": "cave_entrance"
+      "gehe nach Süden": "start",
+      "gehe nach Osten": "cave_entrance"
     }
   },
   "forest_south": {
-    "description": "You are in a sunny clearing. There is a house to the west.",
+    "description": "Du bist auf einer sonnigen Lichtung. Es gibt ein Haus im Westen.",
     "actions": {
-      "go north": "start",
-      "go west": "house"
+      "gehe nach Norden": "start",
+      "gehe nach Westen": "house"
     }
   },
   "cave_entrance": {
-    "description": "You are at the entrance of a cave. It is dark inside.",
+    "description": "Du bist am Eingang einer Höhle. Innen ist es dunkel.",
     "actions": {
-      "go west": "forest_north",
-      "enter cave": "cave"
+      "gehe nach Westen": "forest_north",
+      "betrete die Höhle": "cave"
     }
   },
   "house": {
-    "description": "You are at the door of a small house. It looks abandoned.",
+    "description": "Du stehst vor der Tür eines kleinen Hauses. Es sieht verlassen aus.",
     "actions": {
-      "go east": "forest_south",
-      "enter house": "inside_house"
+      "gehe nach Osten": "forest_south",
+      "betrete das Haus": "inside_house"
     }
   },
   "cave": {
-    "description": "You are inside a dark cave. You see some light in the distance.",
+    "description": "Du bist in einer dunklen Höhle. In der Ferne siehst du etwas Licht.",
     "actions": {
-      "go out": "cave_entrance",
-      "go forward": "cave_deep"
+      "gehe hinaus": "cave_entrance",
+      "gehe vorwärts": "cave_deep"
     }
   },
   "inside_house": {
-    "description": "You are inside the house. It is dusty and quiet.",
+    "description": "Du bist im Haus. Es ist staubig und still.",
     "actions": {
-      "go out": "house",
-      "explore": "house_explore"
+      "gehe hinaus": "house",
+      "erkunde": "house_explore"
     }
   },
   "cave_deep": {
-    "description": "You are deep in the cave. There is a treasure chest here.",
+    "description": "Du bist tief in der Höhle. Hier ist eine Schatztruhe.",
     "actions": {
-      "go back": "cave",
-      "open chest": "treasure"
+      "gehe zurück": "cave",
+      "öffne die Truhe": "treasure"
     }
   },
   "house_explore": {
-    "description": "You find an old map inside the house.",
+    "description": "Du findest eine alte Karte im Haus.",
     "actions": {
-      "go out": "house"
+      "gehe hinaus": "house"
     }
   },
   "treasure": {
-    "description": "Congratulations! You found the treasure.",
+    "description": "Herzlichen Glückwunsch! Du hast den Schatz gefunden.",
     "actions": {
-      "start over": "start"
+      "neu beginnen": "start"
     }
   }
 }
