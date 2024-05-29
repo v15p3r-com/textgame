@@ -12,8 +12,11 @@
       "gehe nach Süden": "start",
       "gehe nach Osten": "cave_entrance"
     },
-    "trap": true,
-    "trapDescription": "Eine versteckte Falle schnappt zu und verletzt dich. Du verlierst 5 Lebenspunkte."
+    "enemy": {
+      "name": "Räuber",
+      "strength": 7,
+      "health": 5
+    }
   },
   "forest_south": {
     "description": "Du bist auf einer sonnigen Lichtung. Es gibt ein Haus im Westen.",
@@ -27,6 +30,11 @@
     "actions": {
       "gehe nach Westen": "forest_north",
       "betrete die Höhle": "cave"
+    },
+    "enemy": {
+      "name": "Monster",
+      "strength": 8,
+      "health": 6
     }
   },
   "house": {
