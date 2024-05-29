@@ -1,0 +1,70 @@
+{
+  "start": {
+    "description": "You are standing in a forest. Paths lead north and south.",
+    "actions": {
+      "go north": "forest_north",
+      "go south": "forest_south"
+    }
+  },
+  "forest_north": {
+    "description": "You are at the edge of a dark forest. There is a cave to the east.",
+    "actions": {
+      "go south": "start",
+      "go east": "cave_entrance"
+    }
+  },
+  "forest_south": {
+    "description": "You are in a sunny clearing. There is a house to the west.",
+    "actions": {
+      "go north": "start",
+      "go west": "house"
+    }
+  },
+  "cave_entrance": {
+    "description": "You are at the entrance of a cave. It is dark inside.",
+    "actions": {
+      "go west": "forest_north",
+      "enter cave": "cave"
+    }
+  },
+  "house": {
+    "description": "You are at the door of a small house. It looks abandoned.",
+    "actions": {
+      "go east": "forest_south",
+      "enter house": "inside_house"
+    }
+  },
+  "cave": {
+    "description": "You are inside a dark cave. You see some light in the distance.",
+    "actions": {
+      "go out": "cave_entrance",
+      "go forward": "cave_deep"
+    }
+  },
+  "inside_house": {
+    "description": "You are inside the house. It is dusty and quiet.",
+    "actions": {
+      "go out": "house",
+      "explore": "house_explore"
+    }
+  },
+  "cave_deep": {
+    "description": "You are deep in the cave. There is a treasure chest here.",
+    "actions": {
+      "go back": "cave",
+      "open chest": "treasure"
+    }
+  },
+  "house_explore": {
+    "description": "You find an old map inside the house.",
+    "actions": {
+      "go out": "house"
+    }
+  },
+  "treasure": {
+    "description": "Congratulations! You found the treasure.",
+    "actions": {
+      "start over": "start"
+    }
+  }
+}

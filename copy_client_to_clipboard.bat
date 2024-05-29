@@ -1,0 +1,1 @@
+call copyFilesContent.bat C:\zzz_Projects\textgame\client\src
