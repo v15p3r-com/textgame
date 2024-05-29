@@ -49,10 +49,12 @@ function fightEnemy(enemy: Enemy, callback: () => void) {
 
     if (playerStrength + playerRoll > enemy.strength + enemyRoll) {
         gameState.health -= 2;
+        updateHealth(); // Lebenspunkte aktualisieren
         gameState.locations[gameState.currentLocation].enemy = undefined;
         showMessage(`Du hast den ${enemy.name} besiegt!`, callback);
     } else {
         gameState.health -= 2;
+        updateHealth(); // Lebenspunkte aktualisieren
         showMessage(`Der ${enemy.name} hat dich verletzt!`, callback);
     }
 }
@@ -66,6 +68,7 @@ function handleEnemy(callback: () => void) {
                 fightEnemy(currentLocation.enemy, callback);
             }, () => {
                 gameState.health -= 2;
+                updateHealth(); // Lebenspunkte aktualisieren
                 showMessage(
                     `Der ${currentLocation.enemy.name} hat dich verletzt, als du versucht hast zu fliehen!`,
                     callback);
@@ -118,12 +121,14 @@ function render() {
 
     if (currentLocation.trap && !gameState.traps[gameState.currentLocation]) {
         gameState.health -= 5;
+        updateHealth(); // Lebenspunkte aktualisieren
         gameState.traps[gameState.currentLocation] = true;
         additionalDescription = currentLocation.trapDescription || '';
     }
 
     if (currentLocation.heal && !gameState.heals[gameState.currentLocation]) {
         gameState.health = 10;
+        updateHealth(); // Lebenspunkte aktualisieren
         gameState.heals[gameState.currentLocation] = true;
         additionalDescription = currentLocation.healDescription || '';
     }
@@ -152,6 +157,11 @@ function render() {
             input.appendChild(button);
         }
     });
+}
+
+function updateHealth() {
+    const output = document.getElementById('output')!;
+    output.innerHTML += `<p>Lebenspunkte: ${gameState.health}</p>`;
 }
 
 function restart() {
