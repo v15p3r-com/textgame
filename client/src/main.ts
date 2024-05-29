@@ -41,32 +41,72 @@ let gameState: GameState = {
     locations: gameData
 };
 
-function fightEnemy(enemy: Enemy) {
-    const playerStrength = gameState.strength + (gameState.item ? gameState.item.strengthBoost : 0);
+function fightEnemy(enemy: Enemy, callback: () => void) {
+    const playerStrength = gameState.strength + (gameState.item ?
+        gameState.item.strengthBoost : 0);
     const playerRoll = Math.floor(Math.random() * 6) + 1;
     const enemyRoll = Math.floor(Math.random() * 6) + 1;
 
     if (playerStrength + playerRoll > enemy.strength + enemyRoll) {
         gameState.health -= 2;
         gameState.locations[gameState.currentLocation].enemy = undefined;
-        alert(`Du hast den ${enemy.name} besiegt!`);
+        showMessage(`Du hast den ${enemy.name} besiegt!`, callback);
     } else {
         gameState.health -= 2;
-        alert(`Der ${enemy.name} hat dich verletzt!`);
+        showMessage(`Der ${enemy.name} hat dich verletzt!`, callback);
     }
 }
 
-function handleEnemy() {
+function handleEnemy(callback: () => void) {
     const currentLocation = gameState.locations[gameState.currentLocation];
     if (currentLocation.enemy) {
-        const fight = confirm(`Ein ${currentLocation.enemy.name} greift an! Willst du kämpfen?`);
-        if (fight) {
-            fightEnemy(currentLocation.enemy);
-        } else {
-            gameState.health -= 2;
-            alert(`Der ${currentLocation.enemy.name} hat dich verletzt, als du versucht hast zu fliehen!`);
-        }
+        showConfirmation(
+            `Ein ${currentLocation.enemy.name} greift an! Willst du kämpfen?`,
+            () => {
+                fightEnemy(currentLocation.enemy, callback);
+            }, () => {
+                gameState.health -= 2;
+                showMessage(
+                    `Der ${currentLocation.enemy.name} hat dich verletzt, als du versucht hast zu fliehen!`,
+                    callback);
+            });
+    } else {
+        callback();
     }
+}
+
+function showMessage(message: string, callback: () => void) {
+    const output = document.getElementById('output')!;
+    const input = document.getElementById('input')!;
+
+    output.innerHTML += `<p>${message}</p>`;
+    input.innerHTML = '';
+    const button = document.createElement('button');
+    button.textContent = 'OK';
+    button.onclick = () => {
+        button.parentElement.removeChild(button);
+        callback();
+    }
+    input.appendChild(button);
+}
+
+function showConfirmation(message: string, onConfirm: () => void,
+                          onCancel: () => void) {
+    const output = document.getElementById('output')!;
+    const input = document.getElementById('input')!;
+
+    output.innerHTML += `<p>${message}</p>`;
+    input.innerHTML = '';
+
+    const yesButton = document.createElement('button');
+    yesButton.textContent = 'Ja';
+    yesButton.onclick = () => onConfirm();
+    input.appendChild(yesButton);
+
+    const noButton = document.createElement('button');
+    noButton.textContent = 'Nein';
+    noButton.onclick = () => onCancel();
+    input.appendChild(noButton);
 }
 
 function render() {
@@ -93,23 +133,26 @@ function render() {
 
     if (gameState.health <= 0) {
         output.innerHTML += `<p>Du bist gestorben.</p>`;
-        input.innerHTML = '<button onclick="()=> restart()">Neu beginnen</button>';
+        const restartButton = document.createElement('button');
+        restartButton.textContent = 'Neu beginnen';
+        restartButton.onclick = () => restart();
+        input.appendChild(restartButton);
         return;
     }
 
-    handleEnemy();
-
-    for (const [action, nextLocation] of Object.entries(currentLocation.actions)) {
-        const button = document.createElement('button');
-        button.textContent = action;
-        button.onclick = () => {
-            gameState.currentLocation = nextLocation;
-            render();
-        };
-        input.appendChild(button);
-    }
+    handleEnemy(() => {
+        for (const [action, nextLocation] of Object.entries(
+            currentLocation.actions)) {
+            const button = document.createElement('button');
+            button.textContent = action;
+            button.onclick = () => {
+                gameState.currentLocation = nextLocation;
+                render();
+            };
+            input.appendChild(button);
+        }
+    });
 }
-
 
 function restart() {
     console.log('restart');
@@ -120,5 +163,4 @@ function restart() {
     render();
 }
 
-(window as any).restart = restart;
 document.addEventListener('DOMContentLoaded', render);
