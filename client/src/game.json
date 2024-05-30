@@ -7,7 +7,7 @@
     }
   },
   "forest_north": {
-    "description": "Du bist am Rand eines dunklen Waldes. Es gibt eine Höhle im Osten. Hier liegt ein Schwert.",
+    "description": "Du bist am Rand eines dunklen Waldes. Es gibt eine Höhle im Osten.",
     "actions": {
       "gehe nach Süden": "start",
       "gehe nach Osten": "cave_entrance"
@@ -30,7 +30,7 @@
     }
   },
   "cave_entrance": {
-    "description": "Du bist am Eingang einer Höhle. Innen ist es dunkel. Hier liegt eine Axt.",
+    "description": "Du bist am Eingang einer Höhle. Innen ist es dunkel.",
     "actions": {
       "gehe nach Westen": "forest_north",
       "betrete die Höhle": "cave"

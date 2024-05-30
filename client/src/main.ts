@@ -1,11 +1,12 @@
 import gameData from './game.json';
 
 interface GameState {
+    previousLocation: string | null;
     currentLocation: string;
     health: number;
     maxHealth: number;
     strength: number;
-    item: Weapon | null;
+    weapon: Weapon | null;
     traps: { [key: string]: boolean };
     heals: { [key: string]: boolean };
     locations: { [key: string]: Location };
@@ -34,11 +35,12 @@ interface Location {
 }
 
 let gameState: GameState = {
+    previousLocation: null,
     currentLocation: 'start',
     health: 10,
     maxHealth: 10,
     strength: 5,
-    item: null,
+    weapon: null,
     traps: {},
     heals: {},
     locations: gameData
@@ -50,20 +52,24 @@ function updateStats() {
     const weaponElement = document.getElementById('weapon')!;
     healthElement.textContent = `Lebenspunkte: ${gameState.health}/${gameState.maxHealth}`;
     strengthElement.textContent = `Stärke: ${gameState.strength}`;
-    weaponElement.textContent = `Waffe: ${gameState.item ? gameState.item.name : 'Keine'}`;
+    weaponElement.textContent = `Waffe: ${gameState.weapon ? gameState.weapon.name : 'Keine'}`;
 }
 
 function pickUpWeapon(location: string) {
     const currentLocation = gameState.locations[location];
     if (currentLocation.weapon) {
-        if (gameState.item) {
-            const oldItem = gameState.item;
+        const newWeapon = currentLocation.weapon;
+        // Remove the weapon from the location
+        currentLocation.weapon = undefined;
+        if (gameState.weapon) {
+            // Drop the old weapon
+            const oldItem = gameState.weapon;
             gameState.locations[gameState.currentLocation].weapon = oldItem;
             gameState.strength -= oldItem.strengthBoost;
         }
-        gameState.item = currentLocation.weapon;
-        gameState.strength += currentLocation.weapon.strengthBoost;
-        currentLocation.weapon = undefined;
+        // Pick up the new weapon
+        gameState.weapon = newWeapon;
+        gameState.strength += newWeapon.strengthBoost;
         updateStats();
     }
 }
@@ -88,12 +94,11 @@ function handleEnemy(callback: () => void) {
 }
 
 function fightEnemy(enemy: Enemy, callback: () => void) {
-    const playerStrength = gameState.strength + (gameState.item ? gameState.item.strengthBoost : 0);
+    const playerStrength = gameState.strength + (gameState.weapon ? gameState.weapon.strengthBoost : 0);
     const playerRoll = Math.floor(Math.random() * 6) + 1;
     const enemyRoll = Math.floor(Math.random() * 6) + 1;
 
     if (playerStrength + playerRoll > enemy.strength + enemyRoll) {
-        gameState.health -= 2;
         updateStats();
         gameState.locations[gameState.currentLocation].enemy = undefined;
         showMessage(`Du hast den ${enemy.name} besiegt!`, callback);
@@ -173,8 +178,16 @@ function render() {
     handleEnemy(() => {
         for (const [action, nextLocation] of Object.entries(currentLocation.actions)) {
             const button = document.createElement('button');
-            button.textContent = action;
+
+            // Check if the action leads back to the previous location
+            if (nextLocation === gameState.previousLocation) {
+                button.innerHTML = `<span style="font-size: small;">${action}<br>(zurück gehen)</span>`;
+            } else {
+                button.textContent = action;
+            }
+
             button.onclick = () => {
+                gameState.previousLocation = gameState.currentLocation;
                 gameState.currentLocation = nextLocation;
                 render();
             };
@@ -195,8 +208,9 @@ function render() {
 
 function restart() {
     gameState.currentLocation = 'start';
+    gameState.previousLocation = null;  // Add this line to reset the previous location
     gameState.health = gameState.maxHealth;
-    gameState.item = null;
+    gameState.weapon = null;
     gameState.strength = 5;
     gameState.traps = {};
     gameState.heals = {};
@@ -205,6 +219,7 @@ function restart() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    gameState.previousLocation = null;  // Add this line to initialize the previous location
     updateStats();
     render();
 });
