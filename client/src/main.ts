@@ -41,20 +41,26 @@ let gameState: GameState = {
     locations: gameData
 };
 
+function updateStats() {
+    const healthElement = document.getElementById('health')!;
+    const strengthElement = document.getElementById('strength')!;
+    healthElement.textContent = `Lebenspunkte: ${gameState.health}`;
+    strengthElement.textContent = `Stärke: ${gameState.strength}`;
+}
+
 function fightEnemy(enemy: Enemy, callback: () => void) {
-    const playerStrength = gameState.strength + (gameState.item ?
-        gameState.item.strengthBoost : 0);
+    const playerStrength = gameState.strength + (gameState.item ? gameState.item.strengthBoost : 0);
     const playerRoll = Math.floor(Math.random() * 6) + 1;
     const enemyRoll = Math.floor(Math.random() * 6) + 1;
 
     if (playerStrength + playerRoll > enemy.strength + enemyRoll) {
         gameState.health -= 2;
-        updateHealth(); // Lebenspunkte aktualisieren
+        updateStats(); // Aktualisiere Lebenspunkte und Stärke
         gameState.locations[gameState.currentLocation].enemy = undefined;
         showMessage(`Du hast den ${enemy.name} besiegt!`, callback);
     } else {
         gameState.health -= 2;
-        updateHealth(); // Lebenspunkte aktualisieren
+        updateStats(); // Aktualisiere Lebenspunkte und Stärke
         showMessage(`Der ${enemy.name} hat dich verletzt!`, callback);
     }
 }
@@ -68,7 +74,7 @@ function handleEnemy(callback: () => void) {
                 fightEnemy(currentLocation.enemy, callback);
             }, () => {
                 gameState.health -= 2;
-                updateHealth(); // Lebenspunkte aktualisieren
+                updateStats(); // Aktualisiere Lebenspunkte und Stärke
                 showMessage(
                     `Der ${currentLocation.enemy.name} hat dich verletzt, als du versucht hast zu fliehen!`,
                     callback);
@@ -93,8 +99,7 @@ function showMessage(message: string, callback: () => void) {
     input.appendChild(button);
 }
 
-function showConfirmation(message: string, onConfirm: () => void,
-                          onCancel: () => void) {
+function showConfirmation(message: string, onConfirm: () => void, onCancel: () => void) {
     const output = document.getElementById('output')!;
     const input = document.getElementById('input')!;
 
@@ -121,19 +126,19 @@ function render() {
 
     if (currentLocation.trap && !gameState.traps[gameState.currentLocation]) {
         gameState.health -= 5;
-        updateHealth(); // Lebenspunkte aktualisieren
+        updateStats(); // Aktualisiere Lebenspunkte und Stärke
         gameState.traps[gameState.currentLocation] = true;
         additionalDescription = currentLocation.trapDescription || '';
     }
 
     if (currentLocation.heal && !gameState.heals[gameState.currentLocation]) {
         gameState.health = 10;
-        updateHealth(); // Lebenspunkte aktualisieren
+        updateStats(); // Aktualisiere Lebenspunkte und Stärke
         gameState.heals[gameState.currentLocation] = true;
         additionalDescription = currentLocation.healDescription || '';
     }
 
-    output.innerHTML = `<p>${currentLocation.description}</p><p>${additionalDescription}</p><p>Lebenspunkte: ${gameState.health}</p>`;
+    output.innerHTML = `<p>${currentLocation.description}</p><p>${additionalDescription}</p>`;
     input.innerHTML = '';
 
     if (gameState.health <= 0) {
@@ -146,8 +151,7 @@ function render() {
     }
 
     handleEnemy(() => {
-        for (const [action, nextLocation] of Object.entries(
-            currentLocation.actions)) {
+        for (const [action, nextLocation] of Object.entries(currentLocation.actions)) {
             const button = document.createElement('button');
             button.textContent = action;
             button.onclick = () => {
@@ -160,8 +164,7 @@ function render() {
 }
 
 function updateHealth() {
-    const output = document.getElementById('output')!;
-    output.innerHTML += `<p>Lebenspunkte: ${gameState.health}</p>`;
+    updateStats(); // Aktualisiere Lebenspunkte und Stärke
 }
 
 function restart() {
@@ -170,7 +173,11 @@ function restart() {
     gameState.health = 10;
     gameState.traps = {};
     gameState.heals = {};
+    updateStats(); // Aktualisiere Lebenspunkte und Stärke
     render();
 }
 
-document.addEventListener('DOMContentLoaded', render);
+document.addEventListener('DOMContentLoaded', () => {
+    updateStats(); // Aktualisiere Lebenspunkte und Stärke bei initialer Laden
+    render();
+});
