@@ -5,13 +5,13 @@ interface GameState {
     health: number;
     maxHealth: number;
     strength: number;
-    item: Item | null;
+    item: Weapon | null;
     traps: { [key: string]: boolean };
     heals: { [key: string]: boolean };
     locations: { [key: string]: Location };
 }
 
-interface Item {
+interface Weapon {
     name: string;
     strengthBoost: number;
 }
@@ -30,12 +30,13 @@ interface Location {
     heal?: boolean;
     healDescription?: string;
     enemy?: Enemy;
+    weapon?: Weapon;
 }
 
 let gameState: GameState = {
     currentLocation: 'start',
     health: 10,
-    maxHealth: 10, // Maximale Lebenspunkte hinzugefügt
+    maxHealth: 10,
     strength: 5,
     item: null,
     traps: {},
@@ -46,24 +47,24 @@ let gameState: GameState = {
 function updateStats() {
     const healthElement = document.getElementById('health')!;
     const strengthElement = document.getElementById('strength')!;
+    const weaponElement = document.getElementById('weapon')!;
     healthElement.textContent = `Lebenspunkte: ${gameState.health}/${gameState.maxHealth}`;
     strengthElement.textContent = `Stärke: ${gameState.strength}`;
+    weaponElement.textContent = `Waffe: ${gameState.item ? gameState.item.name : 'Keine'}`;
 }
 
-function fightEnemy(enemy: Enemy, callback: () => void) {
-    const playerStrength = gameState.strength + (gameState.item ? gameState.item.strengthBoost : 0);
-    const playerRoll = Math.floor(Math.random() * 6) + 1;
-    const enemyRoll = Math.floor(Math.random() * 6) + 1;
-
-    if (playerStrength + playerRoll > enemy.strength + enemyRoll) {
-        gameState.health -= 2;
+function pickUpWeapon(location: string) {
+    const currentLocation = gameState.locations[location];
+    if (currentLocation.weapon) {
+        if (gameState.item) {
+            const oldItem = gameState.item;
+            gameState.locations[gameState.currentLocation].weapon = oldItem;
+            gameState.strength -= oldItem.strengthBoost;
+        }
+        gameState.item = currentLocation.weapon;
+        gameState.strength += currentLocation.weapon.strengthBoost;
+        currentLocation.weapon = undefined;
         updateStats();
-        gameState.locations[gameState.currentLocation].enemy = undefined;
-        showMessage(`Du hast den ${enemy.name} besiegt!`, callback);
-    } else {
-        gameState.health -= 2;
-        updateStats();
-        showMessage(`Der ${enemy.name} hat dich verletzt!`, callback);
     }
 }
 
@@ -83,6 +84,23 @@ function handleEnemy(callback: () => void) {
             });
     } else {
         callback();
+    }
+}
+
+function fightEnemy(enemy: Enemy, callback: () => void) {
+    const playerStrength = gameState.strength + (gameState.item ? gameState.item.strengthBoost : 0);
+    const playerRoll = Math.floor(Math.random() * 6) + 1;
+    const enemyRoll = Math.floor(Math.random() * 6) + 1;
+
+    if (playerStrength + playerRoll > enemy.strength + enemyRoll) {
+        gameState.health -= 2;
+        updateStats();
+        gameState.locations[gameState.currentLocation].enemy = undefined;
+        showMessage(`Du hast den ${enemy.name} besiegt!`, callback);
+    } else {
+        gameState.health -= 2;
+        updateStats();
+        showMessage(`Der ${enemy.name} hat dich verletzt!`, callback);
     }
 }
 
@@ -162,13 +180,24 @@ function render() {
             };
             input.appendChild(button);
         }
+
+        if (currentLocation.weapon) {
+            const weaponButton = document.createElement('button');
+            weaponButton.textContent = `Nimm ${currentLocation.weapon.name}`;
+            weaponButton.onclick = () => {
+                pickUpWeapon(gameState.currentLocation);
+                render();
+            };
+            input.appendChild(weaponButton);
+        }
     });
 }
 
 function restart() {
-    console.log('restart');
     gameState.currentLocation = 'start';
     gameState.health = gameState.maxHealth;
+    gameState.item = null;
+    gameState.strength = 5;
     gameState.traps = {};
     gameState.heals = {};
     updateStats();

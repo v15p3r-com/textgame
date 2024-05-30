@@ -7,7 +7,7 @@
     }
   },
   "forest_north": {
-    "description": "Du bist am Rand eines dunklen Waldes. Es gibt eine Höhle im Osten.",
+    "description": "Du bist am Rand eines dunklen Waldes. Es gibt eine Höhle im Osten. Hier liegt ein Schwert.",
     "actions": {
       "gehe nach Süden": "start",
       "gehe nach Osten": "cave_entrance"
@@ -16,6 +16,10 @@
       "name": "Räuber",
       "strength": 7,
       "health": 5
+    },
+    "weapon": {
+      "name": "Schwert",
+      "strengthBoost": 3
     }
   },
   "forest_south": {
@@ -26,7 +30,7 @@
     }
   },
   "cave_entrance": {
-    "description": "Du bist am Eingang einer Höhle. Innen ist es dunkel.",
+    "description": "Du bist am Eingang einer Höhle. Innen ist es dunkel. Hier liegt eine Axt.",
     "actions": {
       "gehe nach Westen": "forest_north",
       "betrete die Höhle": "cave"
@@ -35,6 +39,10 @@
       "name": "Monster",
       "strength": 8,
       "health": 6
+    },
+    "weapon": {
+      "name": "Axt",
+      "strengthBoost": 4
     }
   },
   "house": {
